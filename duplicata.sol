@@ -12,6 +12,7 @@ contract Duplicata is Owner, Titulo {
     uint256 public valor;
     uint256 public vencimento;
     string public descricao;
+    uint public dataEmissao;
     
     constructor(
         string memory _denominacao,
@@ -27,17 +28,18 @@ contract Duplicata is Owner, Titulo {
         valor = _valor;
         vencimento = _vencimento;
         descricao = _descricao;
+        dataEmissao = block.timestamp;
     }
     
-    function valorNominal() external view override returns (uint256) {
+    function valorNominal() external view returns (uint256) {
         return valor;
     }
 
-    function nomeEmissor() external view override returns (string memory) {
+    function nomeEmissor() external view returns (string memory) {
         return emitente;
     }
 
-    function dataEmissao() external view override returns (uint256) {
-        return block.timestamp;
+    function dataEmissao() external view returns (uint256) {
+        return dataEmissao;
     }
 }
