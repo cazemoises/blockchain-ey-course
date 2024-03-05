@@ -18,7 +18,7 @@ function App() {
 	const [recipient, setRecipient] = useState<string>('');
 	const [publicKey, setPublicKey] = useState<string>('');
 	const [quantity, setQuantity] = useState<number>(0);
-	const [balance, setBalance] = useState<number>(0);
+	const [balance, setBalance] = useState<number>(-1);
 
 	const CONTRACT_ABI = [{ "inputs": [], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "spender", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "from", "type": "address" }, { "indexed": true, "internalType": "address", "name": "to", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "inputs": [{ "internalType": "address", "name": "tokenOwner", "type": "address" }, { "internalType": "address", "name": "spender", "type": "address" }], "name": "allowance", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "approve", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "tokenOwner", "type": "address" }], "name": "balanceOf", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "burn", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_newOwner", "type": "address" }], "name": "changeOwner", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "string", "name": "newRating", "type": "string" }], "name": "changeRating", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "decimals", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "faceValue", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "issueDate", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "maturityPeriod", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "mint", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "name", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "rating", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "symbol", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "totalSupply", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "transfer", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "from", "type": "address" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "transferFrom", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "whoIsTheOwner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }];
 
@@ -31,7 +31,6 @@ function App() {
 
 		await window.ethereum.request({ method: 'eth_requestAccounts' });
 
-
 		const provider = new ethers.BrowserProvider(window.ethereum);
 
 		return needSigner ? provider.getSigner() : provider;
@@ -41,8 +40,10 @@ function App() {
 		const provider = await getProviderOrSigner();
 		const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
 		try {
+			console.log("teste")
 			const balance = await contract.balanceOf(address);
 			setBalance(Number(balance));
+			console.log(balance)
 		} catch (error) {
 			console.log((error as Error).message);
 
@@ -81,7 +82,9 @@ function App() {
 
 	useEffect(() => {
 
-		getContractInfo()
+		console.log("TESTE")
+		getContractInfo();
+		console.log("TESTE")
 
 	}, [])
 	
@@ -153,7 +156,7 @@ function App() {
 						onChange={(e) => setPublicKey(e.target.value)}
 					/>
 					<p className={teste.value}>
-						{balance > 0 ? `O seu saldo é: ${balance}` : ""}
+						{balance >= 0 ? `O seu saldo é: ${balance}` : ""}
 					</p>
 					<button
 						className={teste.balanceButton}
@@ -177,7 +180,9 @@ function App() {
 					/>
 					<button
 						onClick={() => {transferTokens(recipient, quantity as number)}}
-					>Confirmar</button>
+					>
+						Confirmar
+					</button>
 				</div>
 			</div>
 		</div>
