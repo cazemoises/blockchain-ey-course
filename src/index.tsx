@@ -37,13 +37,6 @@ function App() {
 		return needSigner ? provider.getSigner() : provider;
 	}
 
-	async function getTotalSupply() {
-		const provider = await getProviderOrSigner();
-		const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
-		const totalSupply = await contract.totalSupply();
-		console.log(`Total Supply: ${totalSupply}`);
-	}
-
 	async function getBalanceOf(address: string) {
 		const provider = await getProviderOrSigner();
 		const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
