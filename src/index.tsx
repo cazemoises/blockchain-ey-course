@@ -55,9 +55,9 @@ function App() {
 			const balance = await contract.balanceOf(address);
 			setBalance(Number(balance));
 			console.log(balance);
-			successToast(`Saldo obtido com sucesso! (${balance} tokens).`);
+			successToast(`Saldo obtido com sucesso!`);
 		} catch (error) {
-			errorToast("Erro ao obter saldo, verifique o console.");
+			errorToast("Falha ao obter saldo, verifique o console.");
 		}
 	}
 
@@ -71,7 +71,7 @@ function App() {
 			await transaction.wait();
 			successToast(`${amount} tokens enviados para ${to} com sucesso!`);
 		} catch(error) {
-			errorToast("Erro ao transferir tokens, verifique o console.");
+			errorToast("Falha ao transferir tokens, verifique o console.");
 		}
 	}
 
@@ -172,7 +172,7 @@ function App() {
 						onChange={(e) => setPublicKey(e.target.value)}
 					/>
 					<p className={teste.value}>
-						{balance >= 0 ? `O seu saldo é: ${balance}` : ""}
+						{balance >= 0 ? `O seu saldo é: ${balance} tokens` : ""}
 					</p>
 					<button
 						className={teste.balanceButton}
