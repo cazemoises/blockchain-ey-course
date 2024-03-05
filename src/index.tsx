@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import teste from "./assets/styles/index.module.css";
-import { errorToast, successToast } from './components/toasts/Toast';
+import { errorToast, infoToast, successToast } from './components/toasts/Toast';
 
 interface IContract {
 	name: string,
@@ -10,7 +10,7 @@ interface IContract {
 	faceValue: number,
 	rating: string,
 	issueDate: string,
-	maturityPeriod: string
+	maturityPeriod: number
 }
 
 function App() {
@@ -38,6 +38,15 @@ function App() {
 		return needSigner ? provider.getSigner() : provider;
 	}
 
+	function timestampToMonths(timestamp: bigint) {
+		const SECONDS_IN_A_MONTH = 2629746n;
+		const SECONDS_IN_A_DAY = 86400n;
+		if (timestamp < SECONDS_IN_A_MONTH) {
+			return [timestamp / SECONDS_IN_A_DAY];
+		}
+		return timestamp / SECONDS_IN_A_MONTH;
+	}
+
 	async function getBalanceOf(address: string) {
 		const provider = await getProviderOrSigner();
 		const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
@@ -53,12 +62,17 @@ function App() {
 	}
 
 	async function transferTokens(to: string, amount: ethers.BigNumberish) {
-		const signer = await getProviderOrSigner(true);
-		const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-
-		const transaction = await contract.transfer(to, amount);
-		await transaction.wait();
-		console.log(`Transferido ${amount} tokens para ${to}`);
+		try {
+			const signer = await getProviderOrSigner(true);
+			const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+	
+			const transaction = await contract.transfer(to, amount);
+			infoToast("Transação enviada, aguarde a confirmação.")
+			await transaction.wait();
+			successToast(`${amount} tokens enviados para ${to} com sucesso!`);
+		} catch(error) {
+			errorToast("Erro ao transferir tokens, verifique o console.");
+		}
 	}
 
 	function convertBigIntToDate(bigInt: ethers.BigNumberish) {
@@ -79,16 +93,14 @@ function App() {
 			faceValue: Number(await contract.faceValue()),
 			rating: await contract.rating(),
 			issueDate: convertBigIntToDate(await contract.issueDate()),
-			maturityPeriod: convertBigIntToDate(await contract.maturityPeriod())
+			maturityPeriod: Number(timestampToMonths(await contract.maturityPeriod()))
 		};
 		return setContractInfo(contractData);
 	}
 
 	useEffect(() => {
 
-		console.log("TESTE")
 		getContractInfo();
-		console.log("TESTE")
 
 	}, [])
 	
@@ -146,7 +158,7 @@ function App() {
 				</div>
 				<div>
 					<p>Período de Maturidade</p>
-					<span>{contractInfo?.maturityPeriod || "Carregando dados..."}</span>
+					<span>{contractInfo?.maturityPeriod + " meses" || "Carregando dados..."}</span>
 				</div>
 			</div>
 			<div className={teste.interactions}>
@@ -193,4 +205,4 @@ function App() {
 	)
 }
 
-export default App
+export default App;
