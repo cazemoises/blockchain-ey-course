@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import teste from "./assets/styles/index.module.css";
+import { errorToast, successToast } from './components/toasts/Toast';
 
 interface IContract {
 	name: string,
@@ -26,6 +27,7 @@ function App() {
 
 	async function getProviderOrSigner(needSigner = false) {
 		if (!window.ethereum) {
+			errorToast("Nenhum provider encontrado.")
 			throw new Error("Nenhum provider encontrado.");
 		}
 
@@ -43,10 +45,10 @@ function App() {
 			console.log("teste")
 			const balance = await contract.balanceOf(address);
 			setBalance(Number(balance));
-			console.log(balance)
+			console.log(balance);
+			successToast(`Saldo obtido com sucesso! (${balance} tokens).`);
 		} catch (error) {
-			console.log((error as Error).message);
-
+			errorToast("Erro ao obter saldo, verifique o console.");
 		}
 	}
 
@@ -61,7 +63,9 @@ function App() {
 
 	function convertBigIntToDate(bigInt: ethers.BigNumberish) {
 		const timestampNumber = Number(bigInt);
+		console.log(timestampNumber)
 		const date = new Date(timestampNumber * 1000);
+		console.log(date)
 		return date.toISOString().split("T")[0];
 	}
 
