@@ -5,6 +5,7 @@ import { errorToast, infoToast, successToast } from './components/toasts/Toast';
 
 
 // Endereço do contrato: 0x76311e6Ec0cDa7E1a49862eF7a63ed4d408aDb81
+
 interface IContract {
 	name: string,
 	symbol: string, 
