@@ -5,7 +5,6 @@ import { errorToast, infoToast, successToast } from './components/toasts/Toast';
 
 
 // Endereço do contrato: 0x76311e6Ec0cDa7E1a49862eF7a63ed4d408aDb81
-
 interface IContract {
 	name: string,
 	symbol: string, 
@@ -54,10 +53,8 @@ function App() {
 		const provider = await getProviderOrSigner();
 		const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
 		try {
-			console.log("teste")
 			const balance = await contract.balanceOf(address);
 			setBalance(Number(balance));
-			console.log(balance);
 			successToast(`Saldo obtido com sucesso!`);
 		} catch (error) {
 			errorToast("Falha ao obter saldo, verifique o console.");
@@ -73,6 +70,8 @@ function App() {
 			infoToast("Transação enviada, aguarde a confirmação.")
 			await transaction.wait();
 			successToast(`${amount} tokens enviados para ${to} com sucesso!`);
+			setRecipient("");
+			setQuantity(0);
 		} catch(error) {
 			errorToast("Falha ao transferir tokens, verifique o console.");
 		}
@@ -80,15 +79,12 @@ function App() {
 
 	function convertBigIntToDate(bigInt: ethers.BigNumberish) {
 		const timestampNumber = Number(bigInt);
-		console.log(timestampNumber)
 		const date = new Date(timestampNumber * 1000);
-		console.log(date)
 		return date.toISOString().split("T")[0];
 	}
 
 	async function getContractInfo() {
 		const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, await getProviderOrSigner());
-		console.log(await getProviderOrSigner())
 		const contractData = {
 			name: await contract.name(),
 			symbol: await contract.symbol(),
@@ -105,7 +101,7 @@ function App() {
 
 		getContractInfo();
 
-	}, [])
+	})
 	
 	// -- Interação do Usuário --
 	// Saldo de Tokens
