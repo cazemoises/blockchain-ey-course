@@ -71,6 +71,8 @@ function App() {
 			infoToast("Transação enviada, aguarde a confirmação.")
 			await transaction.wait();
 			successToast(`${amount} tokens enviados para ${to} com sucesso!`);
+			setRecipient("");
+			setQuantity(0);
 		} catch(error) {
 			errorToast("Falha ao transferir tokens, verifique o console.");
 		}
@@ -111,7 +113,7 @@ function App() {
 
 		getContractInfo();
 
-	}, [])
+	})
 	
 	// -- Interação do Usuário --
 	// Saldo de Tokens
