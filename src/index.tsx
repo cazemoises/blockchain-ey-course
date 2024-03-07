@@ -220,9 +220,6 @@ function App() {
 						value={rating}
 						onChange={(e) => setRating(e.target.value)}
 					/>
-					<p className={teste.value}>
-						{balance >= 0 ? `O seu saldo é: ${balance} tokens` : ""}
-					</p>
 					<button
 						className={teste.balanceButton}
 						onClick={() => {changeRating(rating)}}>Confirmar</button>
